@@ -44,29 +44,40 @@ def file_upload(wordlist_path, domain_main):
                 record_info = []
                 
                 for line in lines:
-                    if line.startswith("Address:") and "." in line:  # A Record (IPv4)
-                        ip = line.split("Address:")[1].strip()
-                        A_Records.append((combined_file, ip))
-                        record_info.append(f"A: {ip}")
-                        has_record = True
+
+                            if "Name:" in line:  # CNAME Record
+                                cname = line.split("Name:")[1].strip().rstrip(".")
+                                CNAME_Records.append((combined_file, cname))
+                                record_info.append(f"CNAME Record: {cname}")
+                                has_record = True
+
+
+                            elif line.startswith("Addresses:"):  # A Record (IPv4)
+                                ip = line.split()
+                                record_info.append(ip[1])
+                                if "." in ip:
+                                    for ips in ip:
+                                        A_Records.append((combined_file, ips))
+                                        record_info.append(f"A Record: {ip}\n")
+                                        has_record = True
+
+
+                                elif line.startswith("Addresses:"):
+                                    ip = line.split()
+                                    record_info.append(ip[1])
+                                    if ":" in ip:
+                                        for ips in ip:
+                                            AAAA_Records.append((combined_file, ips))
+                                            record_info.append(f"AAAA Record: {ip}")
+                                            has_record = True
                         
-                    elif line.startswith("Address:") and ":" in line:  # AAAA Record (IPv6)
-                        ip = line.split("Address:")[1].strip()
-                        AAAA_Records.append((combined_file, ip))
-                        record_info.append(f"AAAA: {ip}")
-                        has_record = True
-                        
-                    elif "canonical name" in line:  # CNAME Record
-                        cname = line.split("canonical name")[1].strip().rstrip(".")
-                        CNAME_Records.append((combined_file, cname))
-                        record_info.append(f"CNAME: {cname}")
-                        has_record = True
+
                 
                 if has_record:
                     successful_subdomains.append(combined_file)
                     result_line = f"Subdomain exists: {combined_file} [{', '.join(record_info)}]\n"
                     results_file.write(result_line)
-                    print(result_line.strip())
+                    # print(result_line.strip())
                 else:
                     failed_subdomains.append(combined_file)
                     result_line = f"Subdomain does not exist: {combined_file}\n"
