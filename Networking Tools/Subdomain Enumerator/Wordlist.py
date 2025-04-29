@@ -12,8 +12,8 @@ def file_upload(wordlist_path, domain_main):
     successful_subdomains = []
     failed_subdomains = []
     A_Records = []
-    AAAA_Records = []
-    CNAME_Records = []
+    AAAA_Records = [] 
+    CNAME_Records = [] 
     
     # Read and process the file
     try:
@@ -38,38 +38,39 @@ def file_upload(wordlist_path, domain_main):
             try:
                 output = subprocess.check_output(["nslookup", combined_file], stderr=subprocess.DEVNULL)
                 decoded = output.decode('utf-8').replace("\r", "")
-                lines = decoded.splitlines()  # Fixed: added parentheses
+                lines = decoded.splitlines()
                 
                 has_record = False
                 record_info = []
                 
                 for line in lines:
+                            
+                            line = line.strip()  # remove leading/trailing whitespace
 
                             if "Name:" in line:  # CNAME Record
+                                has_record = True
                                 cname = line.split("Name:")[1].strip().rstrip(".")
                                 CNAME_Records.append((combined_file, cname))
                                 record_info.append(f"CNAME Record: {cname}")
-                                has_record = True
 
 
-                            elif line.startswith("Addresses:"):  # A Record (IPv4)
-                                ip = line.split()
-                                record_info.append(ip[1])
-                                if "." in ip:
-                                    for ips in ip:
-                                        A_Records.append((combined_file, ips))
-                                        record_info.append(f"A Record: {ip}\n")
-                                        has_record = True
+                            elif line.startswith("Addresses:"): # A Record
+                                ipv4 = line.split()
+                                if len(ipv4) > 1:
+                                    record_info.append(f"A Record: {ipv4}\n")
+                                    A_Records.append((combined_file, ipv4))
+                                    
+                                # has_record = True
 
 
-                                elif line.startswith("Addresses:"):
-                                    ip = line.split()
-                                    record_info.append(ip[1])
-                                    if ":" in ip:
-                                        for ips in ip:
-                                            AAAA_Records.append((combined_file, ips))
-                                            record_info.append(f"AAAA Record: {ip}")
-                                            has_record = True
+                            elif line: # AAAA Record
+                                ipv6 = line.split()
+                                if ipv6:
+                                    record_info.append(f"AAAA Record: {ipv6}\n")
+                                    AAAA_Records.append((combined_file, ipv6))
+                                # has_record = True
+                                        
+                                
                         
 
                 
