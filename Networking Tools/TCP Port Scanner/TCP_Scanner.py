@@ -1,4 +1,5 @@
 import socket
+import ssl
 
 
 def TCP_Scanner():
@@ -17,21 +18,39 @@ def TCP_Scanner():
 
 
     for port in range (1, 65536):
-
-
+        request = b"GET / HTTP/1.1\r\nHost: " + destination + " \r\n\r\n" # sends HTTP GET Request to server
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # created the socket connections
-        s.settimeout(0.1) # a port wait time or 1 milisecond
+
+
+
 
         try:
-            s.connect((resolved_ip, port)) # tries to connect a port to the user specified host name
+            s.settimeout(0.1) # a port wait time or 1 milisecond
+
+            if port in [443, 993, 465]:
+                context = ssl.create_default_context()
+                s.connect((resolved_ip, port))
+                s = context.wrap_socket(s, server_hostname=destination)
+            else:
+                s.connect((resolved_ip, port))
+            
             service_name = socket.getservbyport(port) # tries to get the service of a running port
+            s.sendall(request) # sends data to server
+
+            request = s.recv(4096) # receives answer from server
             open_ports.append(port)
-            print(f"Port is open! {port}, and the service name for the port is {service_name}") # prints open port and service name
+            print(f"[OPEN PORT]: {port} | [SERVICE]: {service_name} | [BANNER]: {request.decode()}") # prints open port and service name and banner
+
+
+
         except (socket.timeout, ConnectionRefusedError):
              closed_ports.append(port)
-             print(f"Port closed! {port}") # prints any closed ports
+             print(f"[PORT CLOSED] {port}") # prints any closed ports
+
+
         except socket.error as e:
             print(f"Error scanning {port}: {e}") # any errors in the process will be printed
+
         finally:
             s.close() # closes the socket, and then loops back until all 65535 ports are completed
 
