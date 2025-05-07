@@ -18,7 +18,7 @@ def TCP_Scanner():
 
 
     for port in range (1, 65536):
-        request = b"GET / HTTP/1.1\r\nHost: " + destination + " \r\n\r\n" # sends HTTP GET Request to server
+        request = b"GET / HTTP/1.0\r\n\r\n" # sends HTTP GET Request to server
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # created the socket connections
 
 
@@ -27,8 +27,13 @@ def TCP_Scanner():
         try:
             s.settimeout(0.1) # a port wait time or 1 milisecond
 
-            if port in [443, 993, 465]:
+
+
+            if port in [443, 465, 636, 993, 995, 8443]:
+
                 context = ssl.create_default_context()
+                context.check_hostname = False
+                context.verify_mode = ssl.CERT_NONE
                 s.connect((resolved_ip, port))
                 s = context.wrap_socket(s, server_hostname=destination)
             else:
