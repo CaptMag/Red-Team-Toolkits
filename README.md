@@ -37,7 +37,7 @@ The `TCP Port Scanner` currently does not have an ongoing doc, and will be imple
 
 ## Current Issues
 
-currently both the `TCP Port Scanner` and 'Subdomain Enumeration' are facing printing issues.  
+currently both the `TCP Port Scanner` and `Subdomain Enumeration` are facing printing issues.  
 TCP Port Scanner is not properly printing out all the closed ports, what they are and how many open ports and what they are.  
 It also faces issues for SSL Wraping certain ports (such as port 443). 
 
