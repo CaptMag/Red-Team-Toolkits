@@ -61,16 +61,16 @@ def threadpoolexecutor(destination):
         with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
 
 
-            open_ports = []
+            open_ports = [] # list for all open ports
         
 
-            future_to_port = {executor.submit(TCP_Scanner, destination, resolved_ip, port): port for port in range (1, 65536)}
+            future_to_port = {executor.submit(TCP_Scanner, destination, resolved_ip, port): port for port in range (1, 65536)} # goes through TCP function and through the range of ports
 
-            for future in concurrent.futures.as_completed(future_to_port):
+            for future in concurrent.futures.as_completed(future_to_port): # For loops the future_to_port through all the ports in order to scan faster
                     port = future_to_port[future]
                     result = future.result()
                     if result:
-                        open_ports.append(result[0])
+                        open_ports.append(result[0]) # Append results
 
             # Total open and closed ports
             print("\nScan results:")
