@@ -83,18 +83,32 @@ def threadpoolexecutor(destination):
 def os_fingerprinting(destination, open_ports):
     
     data_sent = IP(dst=destination)/TCP(dport=open_ports, flags="S", seq=102) # Sends a TCP Packet to a specific destination
-    result = sr1(data_sent, timeout=2, verbose=0)
+    response = sr1(data_sent, timeout=2, verbose=0)
 
+    result = Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=destination)
+    ans, unans = srp(result, timeout=5, verbose=0)
+
+    get_mac = get_if_hwaddr(conf.iface)
 
     # Checks the Time Till Live for a packet, and depending on the answer, prints its likely operating system
-    if result.ttl <= 64:
-        print(f"[+] TTL from {destination} | Response Time {result.ttl} | Likely a Linux Machine")
-    elif result.ttl == 128:
-        print(f"[+] TTL from {destination} | Response Time {result.ttl} | Likely a Windows Machine")
-    elif result.ttl == 255:
-        print(f"[+] TTL from {destination} | Response Time {result.ttl} | Likely a Cisco Machine")
+
+    if response.ttl <= 64:
+        print(f"[+] TTL from {destination}: {response.ttl} Likely a Linux Machine")
+    elif response.ttl == 128:
+        print(f"[+] TTL from {destination}: {response.ttl} Likely a Windows Machine")
+    elif response.ttl == 255:
+        print(f"[+] TTL from {destination}: {response.ttl} Likely a Cisco Machine ")
     else:
-         print(f"[-] Error! Could not find TTL for {destination}")
+        print(f"[-] No Response: {response.ttk} Unknown OS")
+
+    print(f"[*] Your MAC Address: {get_mac}")
+
+    if ans:
+        for sent, received in ans:
+            print(f"[+] Target MAC Address {destination}: {received.hwsrc}")
+            return
+    
+    print(f"[-] No ARP reply received from {destination}")
          
 
 if __name__ == "__main__":
