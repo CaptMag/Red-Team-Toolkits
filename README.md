@@ -28,7 +28,7 @@ Although the original concept focused around Multithreading, the concurrent.futu
 
 currently it takes around '30 seconds' to run theough all ports.  
 the next step in place is to inplement an 'OS Detection' service for the scanner using 'scapy.all' and focusing on TCP TTL, WindowSize and Headers.  
-the next steps will likely to be implementing 'Firewall Evasion', 'CVE-Detection', and 'Stealth Scanning'. 
+the next steps will likely to be implementing `Firewall Evasion`, `CVE-Detection`, and `Stealth Scanning`. 
 
 ## Documentation
 
