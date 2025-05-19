@@ -3,9 +3,9 @@ This Repository is designed to understand, create and develop a wide variety of 
 
 Currently a long-term project that will host over 20 tools once completed
 
-## topic currently in testing : Networking
+## topic currently in testing : Web Application
 
-Currently focusing on TCP Port Scanner
+Currently focusing on a HTTP Web Crawler
 
 ### Current Standings
 
@@ -28,12 +28,27 @@ Although the original concept focused around Multithreading, the concurrent.futu
 
 currently it takes around '30 seconds' to run theough all ports.  
 the next step in place is to inplement an 'OS Detection' service for the scanner using 'scapy.all' and focusing on TCP TTL, WindowSize and Headers.  
-the next steps will likely to be implementing `Firewall Evasion`, `CVE-Detection`, and `Stealth Scanning`. 
+Added MAC Address pinging through sending an ARP request to a perferred destination
+
+## HTTP(S) Web Crawler
+
+This tool will be used to go through a user selected website and will send `HTTP 1.1 GET/POST REQUESTS`  
+This will also try and find any important arguments and pages such as /admin or /dev  
+checks for any misconfigured webpages or hidden webpages (may feed in with subdomain enumeration)  
+convert HTML files into JSON formatting
+
+## Future Plans
+
+Considering moving `Subdomain Enumeration` into Web Application Tools.  
+Adding in a specific tool for `CVE Detection` using parsing from results from the `socket` import
+the next steps will likely to be implementing `Firewall Evasion` and `Stealth Scanning` onto Port Scanner.  
+Considering changing name of `TCP Port Scanner` to `Network Scanning and Mapping` (basically a mini NMAP)
 
 ## Documentation
 
 As of right now, the `subdomain enumeration tool` has an ongoing document being written, specifying how it works, HTTP Requests, A, AAAA, and CNAME records, CT Transparency and more...  
-The `TCP Port Scanner` currently does not have an ongoing doc, and will be implemented in the near future
+The `TCP Port Scanner` currently does not have an ongoing doc, and will be implemented in the near future.  
+Currently ongoing with HTTP(S) Web Crawler Documentation, will be posted with notes and examples alongside the python file itself.
 
 ## Current Issues
 
